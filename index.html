@@ -236,10 +236,10 @@ function nextMonday(){const d=new Date();const g=d.getDay();const add=g===1?0:((
 /* ---------- programa ---------- */
 const LIFTS={squat:'Sentadilla',bench:'Press banca',deadlift:'Peso muerto',ohp:'Press militar'};
 const MAIN_WEEKS=[
-  {name:'Semana 1 · Volumen',sets:[[5,.70],[5,.70],[5,.70],[5,.70]]},
-  {name:'Semana 2 · Intensidad',sets:[[4,.775],[4,.775],[4,.775],[4,.775]]},
-  {name:'Semana 3 · Pico',sets:[[1,.88,'Top single · RPE 8'],[3,.825],[3,.825],[3,.825]]},
-  {name:'Semana 4 · Descarga',sets:[[5,.60],[5,.60],[5,.60]]}
+  {name:'Ciclo 1 · Volumen',sets:[[5,.70],[5,.70],[5,.70],[5,.70]]},
+  {name:'Ciclo 2 · Intensidad',sets:[[4,.775],[4,.775],[4,.775],[4,.775]]},
+  {name:'Ciclo 3 · Pico',sets:[[1,.88,'Top single · RPE 8'],[3,.825],[3,.825],[3,.825]]},
+  {name:'Ciclo 4 · Descarga',sets:[[5,.60],[5,.60],[5,.60]]}
 ];
 const RPE_W=[7,8,9,6];
 const SCHED={
@@ -248,53 +248,58 @@ const SCHED={
   desc:[['—','Duerme hasta las 5:30 si puedes'],['Tarde','Caminata 30–40 min a paso ligero'],['Noche','15 min de movilidad y a dormir 21:30']]
 };
 const SESSIONS={
- sq:{dow:1,type:'fuerza',title:'Fuerza · Sentadilla',focus:'Sentadilla pesada y cadena posterior',ex:[
+ pf:{type:'fuerza',title:'Fuerza · Pierna',focus:'Sentadilla pesada y piernas',ex:[
   {id:'sq_main',name:'Sentadilla trasera',main:'squat',rest:210,note:'Aproximación: barra×10, 40%×5, 60%×3, 75%×1.'},
   {id:'sq_pause',name:'Sentadilla con pausa de 2 s',lift:'squat',pct:[.60,.62,.65,.50],sets:3,reps:[4,3,3,3],rest:150},
-  {id:'rdl',name:'Peso muerto rumano',sets:3,reps:'8',rest:120},
-  {id:'legpress',name:'Prensa de pierna',sets:3,reps:'10–12',rest:90},
-  {id:'legcurl',name:'Curl femoral acostado',sets:3,reps:'12',rest:60},
-  {id:'abwheel',name:'Rueda abdominal',sets:3,reps:'10',rest:60}]},
- bp:{dow:2,type:'fuerza',title:'Fuerza · Press banca',focus:'Press banca pesado y empuje',ex:[
+  {id:'legpress',name:'Prensa de pierna',sets:3,reps:'8–10',rest:120},
+  {id:'legcurl',name:'Curl femoral acostado',sets:3,reps:'10–12',rest:75},
+  {id:'calf',name:'Elevación de pantorrilla de pie',sets:4,reps:'10–12',rest:60},
+  {id:'hangleg',name:'Elevaciones de piernas colgado (abdomen)',sets:3,reps:'10–12',rest:60}]},
+ ef:{type:'fuerza',title:'Fuerza · Empujes',focus:'Press banca pesado, hombro y tríceps',ex:[
   {id:'bp_main',name:'Press banca',main:'bench',rest:180,note:'Retracción escapular, pies firmes, pausa breve en el pecho.'},
   {id:'ohp',name:'Press militar de pie',lift:'ohp',pct:[.70,.75,.78,.60],sets:3,reps:[6,5,4,5],rest:150},
-  {id:'bbrow',name:'Remo con barra',sets:4,reps:'8',rest:120},
-  {id:'dips',name:'Fondos en paralelas',sets:3,reps:'8–10',rest:90},
-  {id:'facepull',name:'Face pull',sets:3,reps:'15',rest:60},
-  {id:'tripush',name:'Extensión de tríceps en polea',sets:3,reps:'12',rest:60}]},
- dl:{dow:3,type:'fuerza',title:'Fuerza · Peso muerto',focus:'Peso muerto pesado y espalda',ex:[
+  {id:'pecdeck',name:'Aperturas en pec deck',sets:3,reps:'12–15',rest:60},
+  {id:'dips',name:'Fondos en paralelas',sets:3,reps:'6–8',rest:120},
+  {id:'latraise',name:'Elevaciones laterales',sets:3,reps:'12–15',rest:60},
+  {id:'tripush',name:'Extensión de tríceps en polea',sets:3,reps:'10–12',rest:60}]},
+ jf:{type:'fuerza',title:'Fuerza · Jalones',focus:'Peso muerto pesado y espalda',ex:[
   {id:'dl_main',name:'Peso muerto',main:'deadlift',rest:210,note:'Resetea cada repetición desde el piso, sin rebotar.'},
-  {id:'front',name:'Sentadilla frontal',lift:'squat',pct:[.55,.58,.60,.45],sets:3,reps:[6,5,5,5],rest:150},
-  {id:'pullup',name:'Dominadas (con lastre si puedes)',sets:4,reps:'6–8',rest:120},
-  {id:'csrow',name:'Remo con pecho apoyado',sets:3,reps:'10',rest:90},
-  {id:'hipthrust',name:'Hip thrust',sets:3,reps:'8–10',rest:90},
-  {id:'calf',name:'Elevación de pantorrilla de pie',sets:4,reps:'12–15',rest:60}]},
- rest:{dow:4,type:'desc',title:'Descanso',focus:'Recuperación activa',ex:[]},
- up:{dow:5,type:'hiper',title:'Hipertrofia · Torso',focus:'Pecho superior, espalda ancha, hombro lateral',ex:[
-  {id:'incdb',name:'Press inclinado con mancuernas',sets:4,reps:'8–10',rest:120},
-  {id:'latpd',name:'Jalón al pecho',sets:4,reps:'10–12',rest:90},
-  {id:'machpress',name:'Press de pecho en máquina',sets:3,reps:'10–12',rest:90},
-  {id:'cablerow',name:'Remo en polea sentado',sets:3,reps:'12',rest:90},
-  {id:'latraise',name:'Elevaciones laterales',sets:4,reps:'15',rest:60},
-  {id:'cablefly',name:'Aperturas en polea',sets:3,reps:'15',rest:60}]},
- lo:{dow:6,type:'hiper',title:'Hipertrofia · Pierna',focus:'Cuádriceps, glúteo y femoral',ex:[
+  {id:'pullup',name:'Dominadas lastradas',sets:4,reps:'5–6',rest:150},
+  {id:'bbrow',name:'Remo con barra',sets:4,reps:'6–8',rest:120},
+  {id:'neutralpd',name:'Jalón con agarre neutro',sets:3,reps:'10',rest:90},
+  {id:'facepull',name:'Face pull',sets:3,reps:'15',rest:60},
+  {id:'preacher',name:'Curl en banco predicador',sets:3,reps:'8–10',rest:75},
+  {id:'wplank',name:'Plancha con peso (abdomen)',sets:3,reps:'40–60 s',rest:60}]},
+ r1:{type:'desc',title:'Descanso',focus:'Recuperación después del bloque de fuerza',ex:[]},
+ ph:{type:'hiper',title:'Hipertrofia · Pierna',focus:'Cuádriceps, glúteo y femoral',ex:[
   {id:'hack',name:'Sentadilla hack o péndulo',sets:4,reps:'8–10',rest:120},
   {id:'dbrdl',name:'Peso muerto rumano con mancuernas',sets:3,reps:'10',rest:90},
   {id:'bulg',name:'Sentadilla búlgara',sets:3,reps:'10 por pierna',rest:90},
   {id:'legext',name:'Extensión de cuádriceps',sets:3,reps:'15',rest:60},
   {id:'seatcurl',name:'Curl femoral sentado',sets:3,reps:'12',rest:60},
+  {id:'hipthrust',name:'Hip thrust',sets:3,reps:'10–12',rest:90},
   {id:'calf2',name:'Pantorrilla sentado',sets:4,reps:'15',rest:45}]},
- arms:{dow:0,type:'hiper',title:'Hipertrofia · Hombro y brazo',focus:'Deltoides, bíceps, tríceps y abdomen',ex:[
-  {id:'dbohp',name:'Press de hombro con mancuernas',sets:4,reps:'10',rest:90},
-  {id:'latcable',name:'Elevaciones laterales en polea',sets:4,reps:'15',rest:45},
-  {id:'rdelt',name:'Pájaros (deltoide posterior)',sets:3,reps:'15',rest:45},
-  {id:'bbcurl',name:'Curl con barra',sets:3,reps:'10',rest:60},
-  {id:'skull',name:'Press francés',sets:3,reps:'10',rest:60},
+ pe:{type:'hiper',title:'Hipertrofia · Pecho y espalda',focus:'Pecho superior y espalda ancha',ex:[
+  {id:'incsmith',name:'Press inclinado en Smith o máquina',sets:4,reps:'8–10',rest:120},
+  {id:'latpd',name:'Jalón al pecho',sets:4,reps:'10–12',rest:90},
+  {id:'flatdb',name:'Press plano con mancuernas',sets:3,reps:'10–12',rest:90},
+  {id:'cablerow',name:'Remo en polea sentado',sets:3,reps:'12',rest:90},
+  {id:'cablefly',name:'Aperturas en polea',sets:3,reps:'15',rest:60},
+  {id:'pullover',name:'Pullover en polea',sets:3,reps:'15',rest:60},
+  {id:'cablecrunch',name:'Crunch en polea (abdomen)',sets:3,reps:'12–15',rest:45}]},
+ br:{type:'hiper',title:'Hipertrofia · Brazos y hombro',focus:'Bíceps, tríceps y los tres deltoides',ex:[
+  {id:'dbohp',name:'Press de hombro con mancuernas',sets:4,reps:'8–10',rest:90},
+  {id:'bbcurl',name:'Curl con barra',sets:4,reps:'8–10',rest:75},
+  {id:'skull',name:'Press francés',sets:4,reps:'8–10',rest:75},
+  {id:'inclcurl',name:'Curl inclinado con mancuernas',sets:3,reps:'12',rest:60},
+  {id:'rope',name:'Extensión de tríceps con cuerda',sets:3,reps:'12',rest:60},
   {id:'hammer',name:'Curl martillo',sets:3,reps:'12',rest:45},
-  {id:'rope',name:'Extensión de tríceps con cuerda',sets:3,reps:'12',rest:45},
-  {id:'cablecrunch',name:'Crunch en polea',sets:3,reps:'15',rest:45}]}
+  {id:'latcable',name:'Elevaciones laterales en polea',sets:4,reps:'15',rest:45},
+  {id:'rdelt',name:'Pájaros (deltoide posterior)',sets:3,reps:'15',rest:45}]},
+ r2:{type:'desc',title:'Descanso',focus:'Recuperación antes del siguiente ciclo',ex:[]}
 };
-const BY_DOW={};Object.entries(SESSIONS).forEach(([k,v])=>BY_DOW[v.dow]=k);
+const CYCLE=['pf','ef','jf','r1','ph','pe','br','r2'];
+const CYCLE_START='2026-10-04';
 const ALL_EX={};Object.values(SESSIONS).forEach(s=>s.ex.forEach(e=>ALL_EX[e.id]=e));
 
 /* ---------- alimentos ---------- */
@@ -305,13 +310,16 @@ const FOODS=[
  {id:'res',name:'Res magra / sirloin (cocida)',por:'100 g',g:100,kcal:200,p:29,c:0,f:9,cat:'Proteínas',buy:1.33,note:'peso crudo'},
  {id:'atun',name:'Atún en agua',por:'1 lata drenada',kcal:116,p:26,c:0,f:1,cat:'Proteínas',unit:'lata'},
  {id:'salmon',name:'Salmón',por:'100 g',g:100,kcal:208,p:20,c:0,f:13,cat:'Proteínas',buy:1.2,note:'peso crudo'},
- {id:'whey',name:'Proteína whey',por:'1 scoop',kcal:120,p:24,c:3,f:1.5,cat:'Otros',unit:'scoop'},
+ {id:'whey',name:'Proteína whey',por:'1 scoop (30 g)',g:30,kcal:120,p:24,c:3,f:1.5,cat:'Suplementos',buy:1},
+ {id:'creatina',name:'Creatina monohidratada',por:'5 g',g:5,kcal:0,p:0,c:0,f:0,cat:'Suplementos',buy:1},
+ {id:'pescado',name:'Pescado blanco (cocido)',por:'100 g',g:100,kcal:128,p:26,c:0,f:2.7,cat:'Proteínas',buy:1.2,note:'tilapia, basa o robalo · peso crudo'},
  {id:'yogur',name:'Yogur griego natural 0%',por:'100 g',g:100,kcal:59,p:10.2,c:3.6,f:.4,cat:'Lácteos',buy:1},
  {id:'leche',name:'Leche descremada',por:'250 ml',g:250,kcal:85,p:8.5,c:12,f:.3,cat:'Lácteos',buy:1,note:'ml'},
  {id:'panela',name:'Queso panela',por:'50 g',g:50,kcal:125,p:9,c:1.5,f:9,cat:'Lácteos',buy:1},
  {id:'arroz',name:'Arroz blanco (cocido)',por:'100 g',g:100,kcal:130,p:2.7,c:28,f:.3,cat:'Carbohidratos',buy:.36,note:'arroz crudo'},
  {id:'tortilla',name:'Tortilla de maíz',por:'1 pz',kcal:60,p:1.5,c:12,f:.8,cat:'Carbohidratos',unit:'pz'},
- {id:'frijol',name:'Frijoles de olla',por:'100 g',g:100,kcal:127,p:8.7,c:22.8,f:.5,cat:'Carbohidratos',buy:.4,note:'frijol seco'},
+ {id:'tostada',name:'Tostada horneada',por:'1 pz',kcal:50,p:1.3,c:9.5,f:.8,cat:'Carbohidratos',unit:'pz'},
+ {id:'miel',name:'Miel',por:'1 cda (21 g)',g:21,kcal:64,p:0,c:17,f:0,cat:'Carbohidratos',buy:1},
  {id:'avena',name:'Avena',por:'40 g',g:40,kcal:152,p:5.3,c:27,f:2.6,cat:'Carbohidratos',buy:1},
  {id:'papa',name:'Papa (cocida)',por:'100 g',g:100,kcal:87,p:1.9,c:20,f:.1,cat:'Carbohidratos',buy:1},
  {id:'camote',name:'Camote (cocido)',por:'100 g',g:100,kcal:90,p:2,c:21,f:.1,cat:'Carbohidratos',buy:1},
@@ -328,13 +336,15 @@ const FOODS=[
 ];
 const FOOD=Object.fromEntries(FOODS.map(f=>[f.id,f]));
 const MEALS=[
- {id:'pre',time:'4:35',title:'Pre-entreno',items:[['platano',1,1],['cafe',1,0]]},
- {id:'des',time:'7:15',title:'Desayuno post-entreno',items:[['huevo',2,0],['claras',2,0],['tortilla',3,1],['frijol',1,1],['aguacate',1,1]]},
- {id:'com',time:'13:30',title:'Comida',items:[['pollo',2,0],['arroz',1.5,1],['verdura',1,0],['aceite',1,1]]},
- {id:'col',time:'17:45',title:'Colación',items:[['yogur',2,0],['avena',1,1],['berries',1,0]]},
- {id:'cen',time:'20:00',title:'Cena',items:[['res',1.5,0],['papa',2,1],['verdura',1,0]]}
+ {id:'pre',time:'4:35',title:'Pre-entreno',items:[['avena',1.5,1],['whey',1,0],['platano',1,1],['creatina',1,0],['cafe',1,0]]},
+ {id:'des',time:'7:15',title:'Desayuno post-entreno',items:[['huevo',2,0],['claras',1.5,2],['tortilla',3,1],['aguacate',1,1]]},
+ {id:'com',time:'13:30',title:'Comida',A:[['pescado',2,2],['arroz',1.5,1],['verdura',1,0],['aceite',1,1]],B:[['pollo',1.5,2],['arroz',1.5,1],['verdura',1,0],['aceite',1,1]]},
+ {id:'col',time:'17:45',title:'Colación',A:[['yogur',2,2],['avena',1,1],['berries',1,0]],B:[['atun',1,0],['tostada',3,1],['manzana',1,1]]},
+ {id:'cen',time:'20:00',title:'Cena',A:[['pollo',1.5,2],['papa',2,1],['verdura',1,0],['aceite',1,1]],B:[['res',1.5,2],['papa',2,1],['verdura',1,0]]}
 ];
-const STAPLES=['Creatina monohidratada (5 g/día)','Limones','Sal, pimienta y especias','Salsa casera o pico de gallo','Agua para 3 L diarios'];
+const dayVar=date=>(((diffDays(date,'2026-10-04'))%2)+2)%2===0?'A':'B';
+const mealItems=(m,v)=>m.items||m[v];
+const STAPLES=['Limones','Sal, pimienta y especias','Salsa casera o pico de gallo','Agua para 3 L diarios'];
 
 /* ---------- hábitos ---------- */
 const HABITS=[
@@ -349,7 +359,7 @@ const HABITS=[
 ];
 
 /* ---------- estado ---------- */
-const DEFAULTS={sex:'m',age:30,height:175,weight:80,act:1.55,adj:-10,squat:null,bench:null,deadlift:null,ohp:null,start:nextMonday(),saved:false};
+const DEFAULTS={sex:'m',age:30,height:175,weight:80,act:1.55,adj:-10,squat:null,bench:null,deadlift:null,ohp:null,start:CYCLE_START,cycleV:2,saved:false};
 const S={tab:'hoy',date:today(),dDate:today(),settings:{...DEFAULTS},workouts:{},meals:{},habits:{},body:{},shopping:{checked:{},extras:[],days:7},db:null,ready:false,dirtyRender:false};
 try{const t=localStorage.getItem('wa_tab');if(t)S.tab=t;}catch(e){}
 
@@ -361,13 +371,23 @@ function targets(){
   const p=r0(w*2.0),f=r0(w*0.8);const c=Math.max(0,r0((kcal-p*4-f*9)/4));
   return {bmr:r0(bmr),tdee:r0(tdee),kcal,p,c,f};
 }
-function planBase(){let fixed=0,scal=0;MEALS.forEach(m=>m.items.forEach(([id,q,sc])=>{const k=FOOD[id].kcal*q;sc?scal+=k:fixed+=k;}));return {fixed,scal};}
-function planScale(){const {fixed,scal}=planBase();const t=targets().kcal;return Math.min(1.8,Math.max(.5,(t-fixed)/scal));}
-function planQty(q,sc){if(!sc)return q;const v=q*planScale();return Math.round(v*4)/4;}
+function planBase(v){const g={0:{k:0,p:0},1:{k:0,p:0},2:{k:0,p:0}};MEALS.forEach(m=>mealItems(m,v).forEach(([id,q,sc])=>{g[sc].k+=FOOD[id].kcal*q;g[sc].p+=FOOD[id].p*q;}));return g;}
+const _scaleCache={};
+function planScale(v){v=v||'A';const t=targets();const key=v+t.kcal+'/'+t.p;if(_scaleCache[key])return _scaleCache[key];
+  const g=planBase(v);const dP=t.p-g[0].p,dK=t.kcal-g[0].k;
+  // resuelve: proteína total = meta (2 g/kg) y calorías totales = meta
+  const det=g[2].p*g[1].k-g[1].p*g[2].k;let sp=(dP*g[1].k-g[1].p*dK)/det,sc=(g[2].p*dK-g[2].k*dP)/det;
+  if(!isFinite(sp)||!isFinite(sc)){sp=1;sc=(dK-g[2].k)/g[1].k;}
+  sp=Math.min(1.6,Math.max(.4,sp));sc=Math.min(1.8,Math.max(.5,(dK-g[2].k*sp)/g[1].k));
+  return _scaleCache[key]={c:sc,p:sp};}
+function planQty(q,sc,dv){if(!sc)return q;const f=planScale(dv);const v=q*(sc===2?f.p:f.c);return Math.round(v*4)/4;}
 
-function weekIdx(date){const d=diffDays(date,S.settings.start||DEFAULTS.start);if(d<0)return 0;return Math.floor(d/7)%4;}
-function cycleNo(date){const d=diffDays(date,S.settings.start||DEFAULTS.start);return d<0?0:Math.floor(d/28)+1;}
-function sessionFor(date){return BY_DOW[parse(date).getDay()];}
+function startDate(){return (S.settings.cycleV===2&&S.settings.start)?S.settings.start:CYCLE_START;}
+function dayNo(date){return diffDays(date,startDate());}
+function weekIdx(date){const d=dayNo(date);if(d<0)return 0;return Math.floor(d/8)%4;}
+function cycleNo(date){const d=dayNo(date);return d<0?0:Math.floor(d/32)+1;}
+function cycleDay(date){return ((dayNo(date)%8)+8)%8;}
+function sessionFor(date){return CYCLE[cycleDay(date)];}
 
 function exRows(ex,w){
   const s=S.settings;
@@ -505,14 +525,14 @@ function habitsBlock(date){
 }
 
 function viewHoy(){
-  const d=today();const key=sessionFor(d);const ses=SESSIONS[key];const w=weekIdx(d);const pre=diffDays(d,S.settings.start)<0;
+  const d=today();const key=sessionFor(d);const ses=SESSIONS[key];const w=weekIdx(d);const pre=dayNo(d)<0;
   const tom=SESSIONS[sessionFor(addDays(d,1))];
   const wo=S.workouts[d];const doneSets=wo?Object.values(wo.ex||{}).flat().filter(x=>x&&x.done).length:0;
   const total=ses.ex.reduce((a,e)=>a+exRows(e,w).length,0);
   return `<div class="section">
    ${setupBanner()}
-   <div><div class="eyebrow">${esc(longDate(d))}</div><h1>${pre?'Arranca el '+esc(longDate(S.settings.start)):esc(ses.title)}</h1>
-   <div class="muted">${pre?'Hoy toca preparar: compra del súper, revisa tus marcas y duerme temprano.':esc(ses.focus)+' · '+(pre?'':'Ciclo '+cycleNo(d)+', '+MAIN_WEEKS[w].name)}</div></div>
+   <div><div class="eyebrow">${esc(longDate(d))}</div><h1>${pre?'Arranca el '+esc(longDate(startDate())):esc(ses.title)}</h1>
+   <div class="muted">${pre?'Hoy toca preparar: compra del súper, revisa tus marcas y duerme temprano.':esc(ses.focus)+' · Día '+(cycleDay(d)+1)+' de 8 · '+MAIN_WEEKS[w].name+(cycleNo(d)>1?' · Mesociclo '+cycleNo(d):'')}</div></div>
    ${pre?'':`<div class="card"><div class="row">${typePill(ses.type)}<span class="spacer"></span>${ses.type!=='desc'?`<span class="small muted num">${doneSets}/${total} series</span>`:''}</div>
      <div class="sched">${SCHED[ses.type].map(([t,x])=>`<span class="t">${t}</span><span>${esc(x)}</span>`).join('')}</div>
      ${ses.type!=='desc'?`<button class="btn block" data-act="openWorkout">Abrir entrenamiento</button>`:`<div class="note">Mañana: ${esc(tom.title)}. Deja la mochila lista esta noche.</div>`}</div>`}
@@ -523,14 +543,14 @@ function viewHoy(){
 
 function viewEntreno(){
   const d=S.date;const key=sessionFor(d);const ses=SESSIONS[key];const w=weekIdx(d);const wo=S.workouts[d]||{};
-  const week=Array.from({length:7},(_,i)=>{const base=addDays(d,-((parse(d).getDay()+6)%7));return addDays(base,i);});
+  const week=Array.from({length:8},(_,i)=>addDays(d,i-cycleDay(d)));
   let html=`<div class="section">
    <div class="datenav"><button class="iconbtn" data-dnav="-1" aria-label="Día anterior"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><div class="lbl">${esc(longDate(d))}${d===today()?' · hoy':''}</div><button class="iconbtn" data-dnav="1" aria-label="Día siguiente"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button></div>
-   <div class="chips">${week.map(x=>{const s=SESSIONS[sessionFor(x)];return `<button class="chip ${x===d?'on':''}" data-date="${x}">${DOW[parse(x).getDay()]} · ${s.type==='fuerza'?'F':s.type==='hiper'?'H':'—'}</button>`;}).join('')}</div>
+   <div class="chips">${week.map(x=>{const s=SESSIONS[sessionFor(x)];return `<button class="chip ${x===d?'on':''}" data-date="${x}">${DOW[parse(x).getDay()]} ${parse(x).getDate()} · ${s.type==='fuerza'?'F':s.type==='hiper'?'H':'Desc.'}</button>`;}).join('')}</div>
    <div><div class="row wrapr">${typePill(ses.type)}<span class="pill">${esc(MAIN_WEEKS[w].name)}</span></div>
    <h1 style="margin-top:8px">${esc(ses.title)}</h1><div class="muted">${esc(ses.focus)}</div></div>`;
   if(ses.type==='desc'){
-    html+=`<div class="card"><div class="sched">${SCHED.desc.map(([t,x])=>`<span class="t">${t}</span><span>${esc(x)}</span>`).join('')}</div><div class="note">Descansar es parte del programa: aquí se consolidan las ganancias de los 3 días pesados.</div></div>`;
+    html+=`<div class="card"><div class="sched">${SCHED.desc.map(([t,x])=>`<span class="t">${t}</span><span>${esc(x)}</span>`).join('')}</div><div class="note">Descansar es parte del programa: aquí se consolidan las ganancias de los 3 días anteriores.</div></div>`;
   }else{
     if(ses.type==='fuerza'&&!S.settings[ses.ex[0].main])html+=`<div class="banner"><span style="flex:1">Agrega tu 1RM de ${esc(LIFTS[ses.ex[0].main])} en Ajustes para ver los kilos exactos. Después de meses sin entrenar, usa ~90% de tu marca anterior.</span><button class="btn sm" data-act="settings">Ajustar</button></div>`;
     html+=`<div class="card">`;
@@ -550,31 +570,31 @@ function viewEntreno(){
     html+=`</div><label class="f">Notas de la sesión<textarea id="wnotes" rows="3" placeholder="Cómo te sentiste, molestias, RPE real…">${esc(wo.notes||'')}</textarea></label>`;
   }
   html+=`<div class="card flat"><h2>Estructura del programa</h2>
-   <div class="small muted">Lun–Mié fuerza (método por porcentajes, ondulación de 4 semanas). Jue descanso. Vie–Dom hipertrofia (doble progresión: cuando completes el rango alto de reps en todas las series, sube el peso).</div>
-   <div class="scrollx"><table class="t"><thead><tr><th>Semana</th><th>Básicos</th><th>Accesorios</th></tr></thead><tbody>
+   <div class="small muted">Ciclo de 8 días: Pierna, Empujes y Jalones de fuerza (por porcentajes) → descanso → Pierna, Pecho y espalda, y Brazos y hombro de hipertrofia (doble progresión: cuando completes el rango alto de reps en todas las series, sube el peso) → descanso. Abdomen 3 veces por ciclo (días 1, 3 y 6), así cualquier semana tiene al menos 2 sesiones. Los porcentajes avanzan cada ciclo de 8 días y se repiten cada 4 ciclos.</div>
+   <div class="scrollx"><table class="t"><thead><tr><th>Ciclo</th><th>Básicos</th><th>Accesorios</th></tr></thead><tbody>
    ${MAIN_WEEKS.map((m,i)=>`<tr${i===w?' style="font-weight:600"':''}><td>${esc(m.name)}</td><td>${i===2?'1@88% + 3×3@82.5%':m.sets.length+'×'+m.sets[0][0]+' @ '+m.sets[0][1]*100+'%'}</td><td>RPE ${RPE_W[i]}${i===3?', −40% series':''}</td></tr>`).join('')}
-   </tbody></table></div><div class="small muted">Al terminar la semana 4, sube 2.5 kg al 1RM de banca/militar y 5 kg a sentadilla/peso muerto si todo salió limpio.</div></div></div>`;
+   </tbody></table></div><div class="small muted">Al terminar el ciclo 4, sube 2.5 kg al 1RM de banca/militar y 5 kg a sentadilla/peso muerto si todo salió limpio.</div></div></div>`;
   return html;
 }
 
 function viewDieta(){
-  const d=S.dDate;const t=targets();const items=(S.meals[d]||{}).items||[];const sc=planScale();
+  const d=S.dDate;const t=targets();const items=(S.meals[d]||{}).items||[];const dv=dayVar(d);const sc=planScale(dv);
   let html=`<div class="section">${setupBanner()}
    <div class="datenav"><button class="iconbtn" data-ddnav="-1" aria-label="Día anterior"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><div class="lbl">${esc(longDate(d))}${d===today()?' · hoy':''}</div><button class="iconbtn" data-ddnav="1" aria-label="Día siguiente"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button></div>
-   <div class="card"><div class="row"><span class="pill hiper">Recomposición</span><span class="spacer"></span><span class="small muted num">Mantenimiento ≈ ${t.tdee} kcal</span></div>${macroBars(d)}</div>`;
+   <div class="card"><div class="row"><span class="pill hiper">Recomposición</span><span class="pill">${dv==='A'?'Día A · pescado':'Día B · atún'}</span><span class="spacer"></span><span class="small muted num">Mantenimiento ≈ ${t.tdee} kcal</span></div>${macroBars(d)}</div>`;
   MEALS.forEach(m=>{
     const mi=items.map((x,i)=>({...x,_i:i})).filter(x=>x.meal===m.id);const kc=mi.reduce((a,x)=>a+(+x.kcal||0),0);
     html+=`<div class="card meal"><div class="row"><div style="flex:1"><div class="eyebrow">${m.time}</div><h3>${esc(m.title)}</h3></div><span class="small muted num">${r0(kc)} kcal</span></div>
-     ${mi.length?mi.map(x=>`<div class="item"><span class="n">${esc(x.name)}${x.qty&&x.qty!==1?' <span class="muted">×'+esc(x.qty)+'</span>':''}</span><span class="k">${r0(x.kcal)} kcal · ${r0(x.p)}P</span><button class="x" data-delitem="${x._i}" aria-label="Quitar">×</button></div>`).join(''):`<div class="small muted">Plan: ${m.items.map(([id,q,s])=>esc(FOOD[id].name)+' '+planQty(q,s)+'×'+esc(FOOD[id].por)).join(' · ')}</div>`}
+     ${mi.length?mi.map(x=>`<div class="item"><span class="n">${esc(x.name)}${x.qty&&x.qty!==1?' <span class="muted">×'+esc(x.qty)+'</span>':''}</span><span class="k">${r0(x.kcal)} kcal · ${r0(x.p)}P</span><button class="x" data-delitem="${x._i}" aria-label="Quitar">×</button></div>`).join(''):`<div class="small muted">Plan: ${mealItems(m,dv).map(([id,q,s])=>esc(FOOD[id].name)+' '+planQty(q,s,dv)+'×'+esc(FOOD[id].por)).join(' · ')}</div>`}
      <div class="row"><button class="btn sm" data-useplan="${m.id}">Comí lo del plan</button><button class="btn ghost sm" data-addfood="${m.id}">+ Otro alimento</button></div></div>`;
   });
-  html+=`<div class="card flat"><h2>Cómo está armado</h2><div class="small muted">Meta ${t.kcal} kcal (${S.settings.adj}% del mantenimiento) · proteína 2 g/kg · grasa 0.8 g/kg · resto carbohidratos. Las porciones de carbohidratos y grasas del plan se ajustan solas a tu meta (factor ${Math.round(sc*100)/100}). Comida fuerte después de entrenar y cena a las 20:00 para dormir a las 21:30.</div></div></div>`;
+  html+=`<div class="card flat"><h2>Cómo está armado</h2><div class="small muted">Meta ${t.kcal} kcal (${S.settings.adj}% del mantenimiento) · proteína 2 g/kg · grasa 0.8 g/kg · resto carbohidratos. Las porciones de pollo, pescado, res, claras y yogur se ajustan para que llegues a 2 g de proteína por kilo; arroz, papa, avena, tortillas, aguacate y aceite completan tus calorías (factor ${Math.round(sc.c*100)/100}). El pre-entreno (60 g de avena con whey y plátano, más creatina) da cerca de 70 g de carbohidratos y 30 g de proteína. Usa avena instantánea o hojuela fina preparada con agua o leche descremada para que se digiera rápido en los 25 min antes de entrenar. El plan alterna días: día A lleva pescado en la comida (y pollo en la cena); día B lleva atún en la colación (y res en la cena), así nunca te tocan seguidos. Cena ligera a las 20:00 para dormir a las 21:30.</div></div></div>`;
   return html;
 }
 
 function shoppingList(){
   const days=+S.shopping.days||7;const agg={};
-  MEALS.forEach(m=>m.items.forEach(([id,q,s])=>{agg[id]=(agg[id]||0)+planQty(q,s)*days;}));
+  for(let i=0;i<days;i++){const dv=dayVar(addDays(today(),i));MEALS.forEach(m=>mealItems(m,dv).forEach(([id,q,s])=>{agg[id]=(agg[id]||0)+planQty(q,s,dv);}));}
   const groups={};
   Object.entries(agg).forEach(([id,q])=>{const f=FOOD[id];let qty,extra='';
     if(f.unit){qty=Math.ceil(q)+' '+f.unit;}
@@ -583,11 +603,11 @@ function shoppingList(){
   return groups;
 }
 function viewSuper(){
-  const sh=S.shopping;const groups=shoppingList();const order=['Proteínas','Lácteos','Carbohidratos','Frutas y verduras','Grasas','Otros'];
+  const sh=S.shopping;const groups=shoppingList();const order=['Proteínas','Lácteos','Carbohidratos','Frutas y verduras','Grasas','Suplementos','Otros'];
   const all=Object.values(groups).flat();const done=all.filter(x=>sh.checked[x.id]).length;
   let html=`<div class="section"><div><div class="eyebrow">Generada desde tu plan de comidas</div><h1>Lista del súper</h1></div>
    <div class="card"><div class="row wrapr"><span>Comprar para</span>${[3,4,7].map(n=>`<button class="chip ${+sh.days===n?'on':''}" data-days="${n}">${n} días</button>`).join('')}<span class="spacer"></span><span class="pill num">${done}/${all.length}</span></div>
-   <div class="small muted">Las cantidades de carne y pollo están en peso crudo; arroz y frijol en seco.</div></div>`;
+   <div class="small muted">Pollo y pescado van en peso crudo; el arroz, en seco.</div></div>`;
   order.filter(c=>groups[c]).forEach(c=>{
     html+=`<div class="card"><h2>${esc(c)}</h2><div>${groups[c].map(x=>`<div class="shop ${sh.checked[x.id]?'done':''}"><button class="chk ${sh.checked[x.id]?'on':''}" data-shop="${x.id}" aria-label="${esc(x.name)}">${CHECK}</button><div class="n">${esc(x.name)}${x.note?`<div class="small muted">${esc(x.note)}</div>`:''}</div><span class="q num">${esc(x.qty)}</span></div>`).join('')}</div></div>`;
   });
@@ -672,8 +692,8 @@ $('#view').addEventListener('click',e=>{
     clearTimeout(timers['workouts/'+d]);save('workouts/'+d,w);render();return;
   }
   if(ds.rest&&!ds.done){startTimer(+ds.rest);return;}
-  if(ds.useplan){const d=S.dDate;const m=MEALS.find(x=>x.id===ds.useplan);const doc=clone(S.meals[d])||{items:[]};doc.items=doc.items||[];
-    m.items.forEach(([id,q,s])=>{const f=FOOD[id];const qq=planQty(q,s);doc.items.push({fid:id,name:f.name+' ('+f.por+')',meal:m.id,qty:qq,kcal:f.kcal*qq,p:f.p*qq,c:f.c*qq,f:f.f*qq});});
+  if(ds.useplan){const d=S.dDate;const m=MEALS.find(x=>x.id===ds.useplan);const dv=dayVar(d);const doc=clone(S.meals[d])||{items:[]};doc.items=doc.items||[];
+    mealItems(m,dv).forEach(([id,q,s])=>{const f=FOOD[id];const qq=planQty(q,s,dv);doc.items.push({fid:id,name:f.name+' ('+f.por+')',meal:m.id,qty:qq,kcal:f.kcal*qq,p:f.p*qq,c:f.c*qq,f:f.f*qq});});
     S.meals[d]=doc;save('meals/'+d,doc);render();toast(m.title+' registrado');return;}
   if(ds.addfood){openFoodSheet(ds.addfood);return;}
   if(ds.delitem!=null&&ds.delitem!==undefined&&t.classList.contains('x')&&ds.delitem!==''){const d=S.dDate;const doc=clone(S.meals[d]);doc.items.splice(+ds.delitem,1);S.meals[d]=doc;save('meals/'+d,doc);render();return;}
@@ -721,7 +741,7 @@ function openSettings(){
    <div class="eyebrow">Marcas (1RM estimado)</div>
    <div class="small muted">Si llevas meses sin entrenar, pon ~90% de tu mejor marca. Si no la sabes, haz una serie de 5 a RPE 8 y multiplica el peso × 1.2.</div>
    <div class="grid2">${num('s_squat','Sentadilla (kg)',s.squat,2.5)}${num('s_bench','Press banca (kg)',s.bench,2.5)}${num('s_deadlift','Peso muerto (kg)',s.deadlift,2.5)}${num('s_ohp','Press militar (kg)',s.ohp,2.5)}</div>
-   <label class="f">Inicio del ciclo (lunes)<input type="date" id="s_start" value="${esc(s.start)}"></label>
+   <label class="f">Inicio (día 1 = Fuerza · Pierna)<input type="date" id="s_start" value="${esc(startDate())}"></label>
    <button class="btn block" id="sSave">Guardar ajustes</button>
    <div class="eyebrow">Cuenta y respaldo</div>
    <div class="small muted">${HAS_FB&&firebase.auth().currentUser?'Sesión: '+esc(firebase.auth().currentUser.email):'Modo: solo este dispositivo'}</div>
@@ -736,7 +756,7 @@ function openSettings(){
   document.querySelectorAll('[data-theme-set]').forEach(b=>b.onclick=()=>{const m=b.dataset.themeSet;if(m==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',m);try{localStorage.setItem('wa_theme',m);}catch(e){}});
   $('#sSave').onclick=()=>{
     const g=id=>{const v=$('#'+id).value;return v===''?null:+v;};
-    const n={sex:$('#s_sex').value,age:g('s_age'),height:g('s_height'),weight:g('s_weight'),act:+$('#s_act').value,adj:+$('#s_adj').value,squat:g('s_squat'),bench:g('s_bench'),deadlift:g('s_deadlift'),ohp:g('s_ohp'),start:$('#s_start').value||DEFAULTS.start,saved:true};
+    const n={sex:$('#s_sex').value,age:g('s_age'),height:g('s_height'),weight:g('s_weight'),act:+$('#s_act').value,adj:+$('#s_adj').value,squat:g('s_squat'),bench:g('s_bench'),deadlift:g('s_deadlift'),ohp:g('s_ohp'),start:$('#s_start').value||CYCLE_START,cycleV:2,saved:true};
     S.settings={...DEFAULTS,...n};save('config/settings',n);closeSheet();render();toast('Ajustes guardados');
   };
 }
