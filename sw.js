@@ -1,6 +1,6 @@
 // Caché para que la app abra sin internet en el gimnasio.
 // Cambia la versión cuando subas cambios para forzar la actualización.
-const C = 'winterarc-v7';
+const C = 'winterarc-v9';
 const SHELL = ['./', './index.html', './firebase-config.js', './manifest.json', './icons/icon-180.png', './icons/icon-512.png'];
 const EXT = ['www.gstatic.com', 'fonts.googleapis.com', 'fonts.gstatic.com'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(C).then(c => c.addAll(SHELL))); self.skipWaiting(); });

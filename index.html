@@ -236,11 +236,14 @@ function nextMonday(){const d=new Date();const g=d.getDay();const add=g===1?0:((
 /* ---------- programa ---------- */
 const LIFTS={squat:'Sentadilla',bench:'Press banca',deadlift:'Peso muerto',ohp:'Press militar'};
 const MAIN_WEEKS=[
-  {name:'Ciclo 1 · Volumen',sets:[[5,.70],[5,.70],[5,.70],[5,.70]]},
-  {name:'Ciclo 2 · Intensidad',sets:[[4,.775],[4,.775],[4,.775],[4,.775]]},
-  {name:'Ciclo 3 · Pico',sets:[[1,.88,'Top single · RPE 8'],[3,.825],[3,.825],[3,.825]]},
-  {name:'Ciclo 4 · Descarga',sets:[[5,.60],[5,.60],[5,.60]]}
+  {name:'Ciclo 1 · Base',sets:[[3,.80,'Top'],[3,.80,'Top'],[6,.725,'Back-off'],[10,.625,'Back-off']],dl:[[3,.80,'Top'],[3,.80,'Top'],[5,.725,'Back-off'],[5,.725,'Back-off']]},
+  {name:'Ciclo 2 · Intensidad',sets:[[3,.85,'Top'],[3,.85,'Top'],[6,.75,'Back-off'],[10,.65,'Back-off']],dl:[[3,.85,'Top'],[3,.85,'Top'],[5,.775,'Back-off'],[5,.775,'Back-off']]},
+  {name:'Ciclo 3 · Pico',sets:[[3,.88,'Top · RPE 8–9'],[3,.88,'Top · RPE 8–9'],[6,.775,'Back-off'],[10,.675,'Back-off']],dl:[[3,.88,'Top · RPE 8–9'],[3,.88,'Top · RPE 8–9'],[5,.80,'Back-off'],[5,.80,'Back-off']]},
+  {name:'Ciclo 4 · Descarga',sets:[[3,.75,'Top ligero'],[3,.75,'Top ligero'],[6,.65,'Back-off']],dl:[[3,.75,'Top ligero'],[3,.75,'Top ligero'],[5,.65,'Back-off']]}
 ];
+const mainSets=(lift,w)=>lift==='deadlift'?MAIN_WEEKS[w].dl:MAIN_WEEKS[w].sets;
+const pctTxt=p=>Math.round(p*1000)/10+'%';
+function schemeTxt(a){const g=[];a.forEach(([r,p])=>{const l=g[g.length-1];if(l&&l.r===r&&l.p===p)l.n++;else g.push({n:1,r,p});});return g.map(x=>x.n+'×'+x.r+' @ '+pctTxt(x.p)).join(' · ');}
 const RPE_W=[7,8,9,6];
 const SCHED={
   fuerza:[['5:00','Calentamiento: bici 5 min + movilidad de cadera y hombro'],['5:12','Series de aproximación al básico'],['5:25','Básico pesado (descansos 3–4 min)'],['6:00','Accesorios'],['6:40','Core y estiramiento'],['6:50','Salida a bañarte y al trabajo']],
@@ -250,7 +253,7 @@ const SCHED={
 const SESSIONS={
  pf:{type:'fuerza',title:'Fuerza · Pierna',focus:'Sentadilla pesada y piernas',ex:[
   {id:'sq_main',name:'Sentadilla trasera',main:'squat',rest:210,note:'Aproximación: barra×10, 40%×5, 60%×3, 75%×1.'},
-  {id:'sq_pause',name:'Sentadilla con pausa de 2 s',lift:'squat',pct:[.60,.62,.65,.50],sets:3,reps:[4,3,3,3],rest:150},
+  {id:'rdl',name:'Peso muerto rumano con barra',sets:3,reps:'6–8',rest:150,note:'Cadera atrás, barra pegada a las piernas, baja hasta sentir el estiramiento del femoral.'},
   {id:'legpress',name:'Prensa de pierna',sets:3,reps:'8–10',rest:120},
   {id:'legcurl',name:'Curl femoral acostado',sets:3,reps:'10–12',rest:75},
   {id:'calf',name:'Elevación de pantorrilla de pie',sets:4,reps:'10–12',rest:60},
@@ -391,13 +394,13 @@ function sessionFor(date){return CYCLE[cycleDay(date)];}
 
 function exRows(ex,w){
   const s=S.settings;
-  if(ex.main){const rm=+s[ex.main]||null;return MAIN_WEEKS[w].sets.map(([r,p,t])=>({reps:r,kg:rm?r25(rm*p):null,tgt:Math.round(p*1000)/10+'%',tag:t||''}));}
+  if(ex.main){const rm=+s[ex.main]||null;return mainSets(ex.main,w).map(([r,p,t])=>({reps:r,kg:rm?r25(rm*p):null,tgt:pctTxt(p),tag:t||''}));}
   if(ex.lift){const rm=+s[ex.lift]||null;const n=w===3?2:ex.sets;const p=ex.pct[w];return Array.from({length:n},()=>({reps:ex.reps[w],kg:rm?r25(rm*p):null,tgt:Math.round(p*1000)/10+'%'}));}
   const n=w===3?Math.max(2,Math.round(ex.sets*.6)):ex.sets;
   return Array.from({length:n},()=>({reps:ex.reps,kg:null,tgt:'RPE '+RPE_W[w]}));
 }
 function exLabel(ex,w){
-  if(ex.main){const ws=MAIN_WEEKS[w];const a=ws.sets;return w===2?'1 × 1 @ 88% + 3 × 3 @ 82.5%':a.length+' × '+a[0][0]+' @ '+(a[0][1]*100)+'%';}
+  if(ex.main){return schemeTxt(mainSets(ex.main,w));}
   if(ex.lift){const n=w===3?2:ex.sets;return n+' × '+ex.reps[w]+' @ '+Math.round(ex.pct[w]*100)+'% de '+LIFTS[ex.lift];}
   const n=w===3?Math.max(2,Math.round(ex.sets*.6)):ex.sets;return n+' × '+ex.reps+' · RPE '+RPE_W[w];
 }
@@ -571,8 +574,8 @@ function viewEntreno(){
   }
   html+=`<div class="card flat"><h2>Estructura del programa</h2>
    <div class="small muted">Ciclo de 8 días: Pierna, Empujes y Jalones de fuerza (por porcentajes) → descanso → Pierna, Pecho y espalda, y Brazos y hombro de hipertrofia (doble progresión: cuando completes el rango alto de reps en todas las series, sube el peso) → descanso. Abdomen 3 veces por ciclo (días 1, 3 y 6), así cualquier semana tiene al menos 2 sesiones. Los porcentajes avanzan cada ciclo de 8 días y se repiten cada 4 ciclos.</div>
-   <div class="scrollx"><table class="t"><thead><tr><th>Ciclo</th><th>Básicos</th><th>Accesorios</th></tr></thead><tbody>
-   ${MAIN_WEEKS.map((m,i)=>`<tr${i===w?' style="font-weight:600"':''}><td>${esc(m.name)}</td><td>${i===2?'1@88% + 3×3@82.5%':m.sets.length+'×'+m.sets[0][0]+' @ '+m.sets[0][1]*100+'%'}</td><td>RPE ${RPE_W[i]}${i===3?', −40% series':''}</td></tr>`).join('')}
+   <div class="scrollx"><table class="t"><thead><tr><th>Ciclo</th><th>Sentadilla y banca</th><th>Peso muerto</th><th>Accesorios</th></tr></thead><tbody>
+   ${MAIN_WEEKS.map((m,i)=>`<tr${i===w?' style="font-weight:600"':''}><td>${esc(m.name)}</td><td>${schemeTxt(m.sets)}</td><td>${schemeTxt(m.dl)}</td><td>RPE ${RPE_W[i]}${i===3?', −40% series':''}</td></tr>`).join('')}
    </tbody></table></div><div class="small muted">Al terminar el ciclo 4, sube 2.5 kg al 1RM de banca/militar y 5 kg a sentadilla/peso muerto si todo salió limpio.</div></div></div>`;
   return html;
 }
